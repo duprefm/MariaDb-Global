@@ -119,47 +119,6 @@ docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD"
 
 docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl query-single.pl
 
-## Sauvegardes
-
-### Mysqldump
-Création du volume commun :
-
-docker volume create VolumeMysqldump
-
-* Cluster.
-
-docker run -d --network=mariadb-network -v GALERACLUSTER_VolumeSVGMysql:/mnt fabricedupre/mariadb-ubuntu /bin/bash /usr/local/bin/dumpSQL.sh root $MYSQL_ROOT_PASSWORD GALERACLUSTER_lb
-
-* Single instance.
-
-docker run -d --network=mariadb-network -v MARIADB_VolumeSVGMysql:/mnt fabricedupre/mariadb-ubuntu /bin/bash /usr/local/bin/dumpSQL.sh root $MYSQL_ROOT_PASSWORD MARIADB_db
-
-* Vérifier le contenu du volume contenant les dumps.
-
-docker run --network=mariadb-network -v VolumeMysqldump:/mnt ubuntu ls -rtl /mnt/mysqldump
-
-### XtraBackup
-
-* Cluster.
-
-docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1'
-
-* Single instance.
-
-docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db'
-
-### Chagement de données grace un un script perl
-
-* Création d'une table.
-
-CREATE DATABASE test;
-USE test;
-CREATE TABLE data ( id INTEGER NOT NULL AUTO_INCREMENT, value CHAR(30), count INTEGER, PRIMARY KEY (value), KEY (id) );
-
-* Lancement d'un container d'injection de données.
-
-docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl querry1.pl
-
 ## Arrêt/Relance d'une stack.
 
 ### Galera.
@@ -169,7 +128,6 @@ docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD"
 export APP_NAME=GALERACLUSTER
 
 docker stack rm $APP_NAME
-
 
 * Modification du fichier grastate.dat
 
@@ -202,22 +160,29 @@ export PORT_MARIA=33062
 
 docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml MARIADB
 
-
 # Sauvegardes
-## Lancement d'un container pilotant les sauvegardes.
-docker run -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes -v MariaDb_VolumeDBsvg:/mnt --name MariaDb_Backups --network mariadb-network fabricedupre/mariadb-ubuntu:latest
 
+* Création du volume commun
+
+docker volume create VolumeMysqldump
+
+## Lancement d'un container pilotant les sauvegardes.
+docker run -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes -v VolumeMysqldump:/mnt --name MariaDb_Backups --network mariadb-network fabricedupre/mariadb-ubuntu:latest
 
 ## Lancement Sauvegardes Standalone
-docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MariaDb_db
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MARIADB_db
 
-docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MariaDb_db
-
-## Vérification Sauvegardes Standalone
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MARIADB_db
 
 ## Lancement Sauvegardes Cluster
-docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MariaDbGalera_dbdbcluster
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass GALERACLUSTER_lb
 
-docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MariaDbGalera_dbcluster
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass GALERACLUSTER_lb
 
 ## Vérification Sauvegardes Standalone
+
+docker exec -it MariaDb_Backups ls -rtl /mnt/MARIADB_db/mysqldump
+
+## Vérification Sauvegardes Cluster
+
+docker exec -it MariaDb_Backups ls -rtl /mnt/GALERACLUSTER_lb/mysqldump
