@@ -3,7 +3,7 @@ version: "3"
 services:
 
   dbcluster:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
+    image: fabricedupre/mariadb-galeracluster:latest
     hostname: dbcluster 
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -19,7 +19,7 @@ services:
     command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci
 
   dbcluster-slave:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
+    image: fabricedupre/mariadb-galeracluster:latest
     hostname: dbcluster-slave 
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -45,18 +45,10 @@ networks:
   driver: overlay
 volumes:
   VolumeslaveVarLibMysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: global
   VolumeslaveVarLogMysql:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   VolumeslaveUsrLibGalera:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   VolumeslaveSVGMysql:
     driver: netapp
-    driver_opts:
-      size: 100g
