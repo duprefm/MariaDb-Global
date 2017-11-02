@@ -45,10 +45,10 @@ networks:
   driver: overlay
 volumes:
   VolumeslaveVarLibMysql:
-    driver: netapp
+    driver: local
   VolumeslaveVarLogMysql:
-    driver: netapp
+    driver: local
   VolumeslaveUsrLibGalera:
-    driver: netapp
+    driver: local
   VolumeslaveSVGMysql:
-    driver: netapp
+    driver: local
