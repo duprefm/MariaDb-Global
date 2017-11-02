@@ -84,6 +84,9 @@ export PORT_MARIA=33062
 
 export APP_NAME=MARIADB
 
+cat TPL-docker-compose-standalone-mariadb.yml | sed 's/<PORT_MARIA>/33062/g' | sed 's/<APP_NAME>/M
+ARIADB/g' > MARIADB-docker-compose-standalone-mariadb.yml
+
 docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml $APP_NAME
 
 ## Console admin
