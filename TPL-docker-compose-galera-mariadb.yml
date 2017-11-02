@@ -1,0 +1,120 @@
+version: "3"
+
+services:
+
+  node1:
+    image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest 
+    hostname: node1 
+    environment:
+      - MYSQL_ROOT_PASSWORD=k3O2Iyd89cnqV0IQx7qV
+      - MYSQL_DATABASE=opteama
+      - MYSQL_USER=opteama_user
+      - MYSQL_PASSWORD=RM8tpLaZwfquwRalvIV8
+    volumes:
+      - Volumenode1VarLibMysql:/var/lib/mysql
+      - Volumenode1VarLogMysql:/var/log/mysql
+      - Volumenode1UsrLibGalera:/usr/lib/galera
+      - VolumeSVGMysql:/mnt
+    networks:
+      - mariadb-network
+    command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm:// --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
+    healthcheck:
+      test: mysqladmin ping -uroot -pk3O2Iyd89cnqV0IQx7qV
+
+  node2:
+    image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest 
+    hostname: node2
+    environment:
+      - MYSQL_ROOT_PASSWORD=k3O2Iyd89cnqV0IQx7qV
+      - MYSQL_DATABASE=opteama
+      - MYSQL_USER=opteama_user
+      - MYSQL_PASSWORD=RM8tpLaZwfquwRalvIV8
+    volumes:
+      - Volumenode2VarLibMysql:/var/lib/mysql
+      - Volumenode2VarLogMysql:/var/log/mysql
+      - Volumenode2UsrLibGalera:/usr/lib/galera
+    depends_on:
+      - node1 
+    networks:
+      - mariadb-network
+    command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://<APP_NAME>_node1,<APP_NAME>_node2 --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
+    healthcheck:
+      test: mysqladmin ping -uroot -pk3O2Iyd89cnqV0IQx7qV
+
+  node3:
+    image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest 
+    hostname: node3
+    environment:
+      - MYSQL_ROOT_PASSWORD=k3O2Iyd89cnqV0IQx7qV
+      - MYSQL_DATABASE=opteama
+      - MYSQL_USER=opteama_user
+      - MYSQL_PASSWORD=RM8tpLaZwfquwRalvIV8
+    volumes:
+      - Volumenode3VarLibMysql:/var/lib/mysql
+      - Volumenode3VarLogMysql:/var/log/mysql
+      - Volumenode3UsrLibGalera:/usr/lib/galera
+    networks:
+      - mariadb-network
+    depends_on:
+      - node2 
+    command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://<APP_NAME>_node1,<APP_NAME>_node2,<APP_NAME>_node3 --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
+    healthcheck:
+      test: mysqladmin ping -uroot -pk3O2Iyd89cnqV0IQx7qV
+
+  lb:
+    image: nginx
+    hostname: lb
+    volumes:
+      - $PWD/nginx_<APP_NAME>.conf:/etc/nginx/nginx.conf
+    networks:
+      - mariadb-network
+    depends_on:
+      - node3
+    ports:
+      - <PORT_MARIA>:3306
+
+networks:
+  mariadb-network:
+    driver: overlay
+    external: true
+volumes:
+  Volumenode1VarLibMysql:
+    driver: netapp 
+    driver_opts:
+      size: 100g
+  Volumenode1VarLogMysql:
+    driver: netapp 
+    driver_opts:
+      size: 10g
+  Volumenode1UsrLibGalera:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  Volumenode2VarLibMysql:
+    driver: netapp
+    driver_opts:
+      size: 100g
+  Volumenode2VarLogMysql:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  Volumenode2UsrLibGalera:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  Volumenode3VarLibMysql:
+    driver: netapp
+    driver_opts:
+      size: 100g
+  Volumenode3VarLogMysql:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  Volumenode3UsrLibGalera:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  VolumeSVGMysql:
+    driver: netapp
+    driver_opts:
+      size: 100g

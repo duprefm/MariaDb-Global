@@ -1,0 +1,63 @@
+version: "3"
+
+services:
+
+  dbcluster:
+    image: dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
+    hostname: dbcluster 
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - DB_SERVICE_NAME=dbcluster
+      - MYSQL_DATABASE=opteama
+      - MYSQL_PASSWORD=RM8tpLaZwfquwRalvIV8
+      - MYSQL_USER=opteama_user
+    networks:
+      - GALERA-network
+    ports:
+      - 33064:3306
+    # --max_allowed_packet=536870912 specific ekm
+    command: --max_allowed_packet=536870912
+
+  dbcluster-slave:
+    image: dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
+    #image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest
+    hostname: dbcluster-slave 
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - DB_SERVICE_NAME=dbcluster
+      - MYSQL_DATABASE=opteama
+      - MYSQL_PASSWORD=RM8tpLaZwfquwRalvIV8
+      - MYSQL_USER=opteama_user
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1 
+    volumes:
+      - VolumeslaveVarLibMysql:/var/lib/mysql
+      - VolumeslaveVarLogMysql:/var/log/mysql
+      - VolumeslaveUsrLibGalera:/usr/lib/galera
+      - VolumeslaveSVGMysql:/mnt
+    depends_on:
+      - dbcluster
+    networks:
+      - GALERA-network
+    # --max_allowed_packet=536870912 specific ekm
+    command: --max_allowed_packet=536870912 --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://GALERA_dbcluster,GALERA_dbcluster-slave --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2 --wsrep-cluster-name=docker_cluster
+
+networks:
+  GALERA-network:
+    external: true
+volumes:
+  VolumeslaveVarLibMysql:
+    driver: netapp
+    driver_opts:
+      size: 100g
+  VolumeslaveVarLogMysql:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  VolumeslaveUsrLibGalera:
+    driver: netapp
+    driver_opts:
+      size: 10g
+  VolumeslaveSVGMysql:
+    driver: netapp
+    driver_opts:
+      size: 100g
