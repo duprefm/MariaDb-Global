@@ -2,21 +2,16 @@
 Image Docker Mariadb 10.2 sur base ubuntu Xenial.
 
 ## Récupération des fichiers de construction de l'image.
-git clone http://v-app-srvc-001.mycorp-v.corp:3000/MCO/MariaDB.git
+git clone https://github.com/duprefm/mariadb-ubuntu.git
 
 ## Construction de l'image.
+docker build -t fabricedupre/mariadb-ubuntu:latest .
 
-cd MariaDB/mariadb-ubuntu
-
-docker login dtr-v-rr.docker.opteama.net:443
-
-docker build -t dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest .
-
-docker push dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest
+docker push fabricedupre/mariadb-ubuntu:latest
 
 ## Lancement d'un container.
 ### En définisant un mot de passe a root, une première base, et son user/password.
-docker run -d -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=basefabrice -e MYSQL_USER=fabrice -e MYSQL_PASSWORD=secret -p 3306:3306 dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest
+docker run -d -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=basefabrice -e MYSQL_USER=fabrice -e MYSQL_PASSWORD=secret -p 3306:3306 fabricedupre/mariadb-ubuntu:latest
 
 ## Variables d'environnementL
 Lorsque vous démarrez cette image, vous pouvez ajuster la configuration de l'instance MariaDB en passant une ou plusieurs variables d'environnement a la ligne de commande d'exécution de docker. Notez qu'aucune des variables ci-dessous n'aura d'effet si vous démarrez le conteneur avec un répertoire de données qui contient déjà une base de données: toute base de données préexistante sera toujours laissée intacte lors du démarrage du conteneur.
