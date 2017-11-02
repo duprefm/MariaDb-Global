@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpass
       - MYSQL_DATABASE=test
       - MYSQL_USER=test_user
-      - MYSQL_PASSWORD=test_pass
+      - MYSQL_PASSWORD=testpass
     volumes:
       - Volumenode1VarLibMysql:/var/lib/mysql
       - Volumenode1VarLogMysql:/var/log/mysql
