@@ -1,5 +1,4 @@
-#FROM ubuntu:16.04
-FROM dtr-v-rr.docker.opteama.net:443/stelia/ubuntu:16.04 
+FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV INITRD No
@@ -9,29 +8,25 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install --allow-unauthenticated -y --no-install-recommends gosu vim.tiny wget curl sudo net-tools pwgen git-core logrotate software-properties-common
+RUN apt-get install -y --no-install-recommends gosu vim.tiny wget curl sudo net-tools pwgen git-core logrotate software-properties-common
 RUN apt-get clean -y
 RUN rm -rf /var/lib/apt/lists/*
 
 ## MariaDb
-#RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0xF1656F24C74CD1D8 
-#RUN echo 'deb http://download.nus.edu.sg/mirror/mariadb/repo/10.2/ubuntu xenial main' | tee /etc/apt/sources.list.d/mariadb.list
-RUN echo 'deb http://ubuntu.mirrors.aerolia.net/ftp.osuosl.org/pub/mariadb/repo/10.2/ubuntu xenial main' | tee /etc/apt/sources.list.d/mariadb.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0xF1656F24C74CD1D8 
+RUN echo 'deb http://download.nus.edu.sg/mirror/mariadb/repo/10.2/ubuntu xenial main' | tee /etc/apt/sources.list.d/mariadb.list
 RUN apt-get update -y 
-RUN apt-get install --allow-unauthenticated --no-install-recommends -y mariadb-server -y
+RUN apt-get install --no-install-recommends -y mariadb-server -y
 RUN sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf
 RUN apt-get clean -y
 RUN rm -rf /var/lib/apt/lists/*
 RUN update-rc.d -f mysql disable
 
 # Percona backups
-#RUN wget https://repo.percona.com/apt/percona-release_0.1-4.xenial_all.deb
-COPY percona-release_0.1-4.xenial_all.deb /tmp/percona-release_0.1-4.xenial_all.deb
-#RUN dpkg -i percona-release_0.1-4.xenial_all.deb
-RUN dpkg -i /tmp/percona-release_0.1-4.xenial_all.deb
+RUN wget https://repo.percona.com/apt/percona-release_0.1-4.xenial_all.deb
+RUN dpkg -i percona-release_0.1-4.xenial_all.deb
 RUN apt-get update -y
-RUN apt-get install --allow-unauthenticated percona-xtrabackup -y
-RUN rm -f /tmp/percona-release_0.1-4.xenial_all.deb
+RUN apt-get install percona-xtrabackup-24 -y
 
 RUN sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf /etc/mysql/conf.d/*
 RUN rm -rf /var/lib/mysql
