@@ -7,46 +7,45 @@ docker network create --driver=overlay --attachable admin-mariadb-network
 
 ## Récupération des sources.
 
-git clone http://v-app-srvc-001.mycorp-v.corp:3000/MCO/MariaDB.git
-
-docker login dtr-v-rr.docker.opteama.net:443
+git clone https://github.com/duprefm/MariaDb.git
 
 ## Construction de l'image mariadb.
 
-cd mariadb-ubuntu
+cp Dockerfile-mariadb Dockerfile
 
-docker build -t dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest .
+docker build -t fabricedupre/mariadb:latest .
 
-docker push dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest
+docker push fabricedupre/mariadb:latest
 
-## Construction de l'image galera.
+## Construction de l'image mariadb-galera.
 
-cd galera
+cp Dockerfile-galera Dockerfile
 
-docker build -t dtr-v-rr.docker.opteama.net:443/stelia/galera:latest .
+docker build -t fabricedupre/galera:latest .
 
-docker push dtr-v-rr.docker.opteama.net:443/stelia/galera:latest
+docker push fabricedupre/galera:latest
 
-## Construction de l'image galera_cluster
-
-cd mariadb-galeracluster
-
-docker build -t dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest .
-
-docker push dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
-
-## Création d'un Cluster Mariadb Galera.
+## Création d'un Cluster Mariadb Galera (Nginx).
 ### Lancement de la stack.
 
 cd MariaDb
 
-export PORT_MARIA=33062
+export PORT_MARIA=33064
 
-export APP_NAME=AppGalera
+export APP_NAME=GALERACLUSTER
 
-~~cat nginx_template.conf | sed 's/template/AppGalera/g' > nginx_AppGalera.conf~~
+cat nginx_template.conf | sed 's/template/GALERACLUSTER/g' > nginx_GALERACLUSTER.conf
 
-docker network create --driver=overlay --attachable AppGalera-mariadb-network
+docker stack deploy --compose-file docker-compose-galera-mariadb.yml $APP_NAME
+
+## Création d'un Cluster Mariadb Galera.
+### Lancement de la stack.
+
+export PORT_MARIA=33066
+
+export APP_NAME=GALERACLUSTER
+
+docker network create --driver=overlay --attachable $APP_NAME-network
 
 docker stack deploy --compose-file docker-compose-galeracluster.yml $APP_NAME
 
@@ -67,13 +66,15 @@ SHOW GLOBAL STATUS LIKE 'wsrep_%';
 ## Lancement d'une base Mariadb Sandalone.
 ### Lancement de la stack.
 
-export PORT_MARIA=33061
+export PORT_MARIA=33062
 
-docker stack deploy --compose-file docker-compose-standalone-mariadb.yml firstDBapp
+export APP_NAME=MARIADB
+
+docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml $APP_NAME
 
 ## Console admin
 
-docker run --name myadmin --network=admin-mariadb-network --name myadmin --hostname myadmin -d -e PMA_HOSTS=AppGalera_lb,firstDBapp_db, -p 8000:80 phpmyadmin/phpmyadmin
+docker run --name myadmin --network=admin-mariadb-network --name myadmin --hostname myadmin -d -e PMA_HOSTS=GALERACLUSTER_lb,MARIADB_db, -p 8000:80 phpmyadmin/phpmyadmin
 
 ## Script perl de chagement de données
 
@@ -91,11 +92,11 @@ cd ..
 
 * Cluster.
 
-docker run -it --rm --network=admin-mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl query-lb.pl
+docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl query-lb.pl
 
 * Standalone.
 
-docker run -it --rm --network=admin-mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl query-single.pl
+docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl query-single.pl
 
 ## Sauvegardes
 
@@ -144,7 +145,7 @@ docker run -it --rm --name my-running-script --network=admin-mariadb-network -v 
 
 * Arrêt de la stack.
 
-export APP_NAME=AppGalera
+export APP_NAME=GALERACLUSTER
 
 docker stack rm $APP_NAME
 
@@ -153,43 +154,49 @@ docker stack rm $APP_NAME
 
 Le fait de passer de 0 a 1 la variable **safe_to_bootstrap**, permet au cluster de redémarrer avec le node1 comme master.
 
-docker run --network=admin-mariadb-network -v AppGalera_Volumenode1VarLibMysql:/var/lib/mysql ubuntu sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /var/lib/mysql/grastate.dat
+docker run -v GALERACLUSTER_Volumenode1VarLibMysql:/var/lib/mysql ubuntu sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /var/lib/mysql/grastate.dat
 
 * Vérification du contenu du fichier **grastate.dat**.
 
-docker run --network=admin-mariadb-network -v AppGalera_Volumenode1VarLibMysql:/var/lib/mysql ubuntu cat
+docker run -v GALERACLUSTER_Volumenode1VarLibMysql:/var/lib/mysql ubuntu cat
  /var/lib/mysql/grastate.dat
 
 * Redémarrage de la pile.
 
-export PORT_MARIA=33062
+export PORT_MARIA=33064
 
-export APP_NAME=AppGalera
+export APP_NAME=GALERACLUSTER
 
-cat nginx_template.conf | sed 's/template/AppGalera/g' > nginx_AppGalera.conf
-
-docker stack deploy --compose-file docker-compose-galera-mariadb.yml $APP_NAME
+docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME
 
 ### Sandalone
 
 * Arrêt de la stack.
 
-docker stack rm firstDBapp
+docker stack rm MARIADB
 
 * Redémarrage de la pile.
 
-export PORT_MARIA=33061
+export PORT_MARIA=33062
 
-docker stack deploy --compose-file docker-compose-standalone-mariadb.yml firstDBapp
+docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml MARIADB
 
 
 # Sauvegardes
-docker run -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes -v firstDBapp_VolumeSVGMysql:/mnt/firstDBapp_db -v AppGalera_VolumeSVGMysql:/mnt/AppGalera_node1 --name AppGalera_nodebck --network admin-mariadb-network fabricedupre/galera
+## Lancement d'un container pilotant les sauvegardes.
+docker run -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes -v MariaDb_VolumeDBsvg:/mnt --name MariaDb_Backups --network admin-mariadb-network fabricedupre/mariadb-ubuntu:latest
 
-docker exec -it AppGalera_nodebck /bin/bash /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db
 
-docker exec -it AppGalera_nodebck /bin/bash /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1
+## Lancement Sauvegardes Standalone
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MariaDb_db
 
-docker exec -it AppGalera_nodebck /bin/bash /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MariaDb_db
 
-docker exec -it AppGalera_nodebck /bin/bash /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1
+## Vérification Sauvegardes Standalone
+
+## Lancement Sauvegardes Cluster
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MariaDbGalera_dbdbcluster
+
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MariaDbGalera_dbcluster
+
+## Vérification Sauvegardes Standalone
