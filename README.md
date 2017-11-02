@@ -3,7 +3,7 @@ Docker Mariadb et Galera cluster
 
 ## Création du réseau comun aux bases et clusters.
 
-docker network create --driver=overlay --attachable admin-mariadb-network
+docker network create --driver=overlay --attachable mariadb-network
 
 ## Récupération des sources.
 
@@ -82,7 +82,7 @@ docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml
 
 ## Console admin
 
-docker run --name myadmin --network=admin-mariadb-network --name myadmin --hostname myadmin -d -e PMA_HOSTS=GALERACLUSTER_lb,MARIADB_db, -p 8000:80 phpmyadmin/phpmyadmin
+docker run --name myadmin --network=mariadb-network --name myadmin --hostname myadmin -d -e PMA_HOSTS=GALERACLUSTER_lb,MARIADB_db, -p 8000:80 phpmyadmin/phpmyadmin
 
 ## Script perl de chagement de données
 
@@ -115,25 +115,25 @@ docker volume create VolumeMysqldump
 
 * Cluster.
 
-docker run -d --network=admin-mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1'
+docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1'
 
 * Single instance.
 
-docker run -d --network=admin-mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db'
+docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db'
 
 * Vérifier le contenu du volume contenant les dumps.
 
-docker run --network=admin-mariadb-network -v VolumeMysqldump:/mnt ubuntu ls -rtl /mnt/mysqldump
+docker run --network=mariadb-network -v VolumeMysqldump:/mnt ubuntu ls -rtl /mnt/mysqldump
 
 ### XtraBackup
 
 * Cluster.
 
-docker run -d --network=admin-mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1'
+docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1'
 
 * Single instance.
 
-docker run -d --network=admin-mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db'
+docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/svgxtrabackup.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db'
 
 ### Chagement de données grace un un script perl
 
@@ -145,7 +145,7 @@ CREATE TABLE data ( id INTEGER NOT NULL AUTO_INCREMENT, value CHAR(30), count IN
 
 * Lancement d'un container d'injection de données.
 
-docker run -it --rm --name my-running-script --network=admin-mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl querry1.pl
+docker run -it --rm --name my-running-script --network=mariadb-network -v "$PWD":/usr/src/myapp -w /usr/src/myapp fabricedupre/perl:dbi perl querry1.pl
 
 ## Arrêt/Relance d'une stack.
 
@@ -192,7 +192,7 @@ docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml
 
 # Sauvegardes
 ## Lancement d'un container pilotant les sauvegardes.
-docker run -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes -v MariaDb_VolumeDBsvg:/mnt --name MariaDb_Backups --network admin-mariadb-network fabricedupre/mariadb-ubuntu:latest
+docker run -d -e MYSQL_RANDOM_ROOT_PASSWORD=yes -v MariaDb_VolumeDBsvg:/mnt --name MariaDb_Backups --network mariadb-network fabricedupre/mariadb-ubuntu:latest
 
 
 ## Lancement Sauvegardes Standalone
