@@ -1,7 +1,7 @@
-FROM dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest 
+FROM fabricedupre/mariadb-ubuntu:latest 
 
-#RUN apt-get update && apt-get upgrade -y \
-#    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
     
 COPY init_cluster_conf.sh /docker-entrypoint-initdb.d/init_cluster_conf.sh
 COPY init_galera_user.sh /docker-entrypoint-initdb.d/init_galera_user.sh
