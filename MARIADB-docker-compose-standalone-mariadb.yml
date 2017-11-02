@@ -28,8 +28,8 @@ networks:
     external: true
 volumes:
   VolumeDBVarLibmysql:
-    driver: netapp
+    driver: local
   VolumeDBVarLogmysql:
-    driver: netapp
+    driver: local
   VolumeSVGMysql:
-    driver: netapp
+    driver: local
