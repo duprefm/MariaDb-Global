@@ -9,6 +9,8 @@ docker network create --driver=overlay --attachable mariadb-network
 
 git clone https://github.com/duprefm/MariaDb-Global.git
 
+cd MariaDb-Global
+
 ## Construction de l'image mariadb.
 
 cd mariadb-ubuntu
@@ -27,7 +29,7 @@ docker push fabricedupre/mariadb-galera:latest
 
 ## Construction de l'image mariadb-galeracluster.
 
-cd galera
+cd mariadb-galeracluster
 
 docker build -t fabricedupre/mariadb-galeracluster:latest .
 
@@ -36,13 +38,16 @@ docker push fabricedupre/mariadb-galeracluster:latest
 ## Création d'un Cluster Mariadb Galera (Nginx).
 ### Lancement de la stack.
 
-cd MariaDb
+cd ../MariaDb
 
 export PORT_MARIA=33064
 
 export APP_NAME=GALERACLUSTER
 
 cat nginx_template.conf | sed 's/template/GALERACLUSTER/g' > nginx_GALERACLUSTER.conf
+
+cat TPL-docker-compose-standalone-mariadb.yml | sed 's/<PORT_MARIA>/33064/g' | sed 's/<APP_NAME>/G
+ALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml.new
 
 docker stack deploy --compose-file docker-compose-galera-mariadb.yml $APP_NAME
 
