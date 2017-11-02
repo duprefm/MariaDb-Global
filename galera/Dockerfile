@@ -1,4 +1,4 @@
-FROM dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest
+FROM fabricedupre/mariadb-ubuntu:latest
 
 EXPOSE 3306 4567 4568 4444
 
