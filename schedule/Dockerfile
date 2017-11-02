@@ -1,4 +1,4 @@
-FROM dtr-v-rr.docker.opteama.net:443/stelia/ubuntu:16.04
+FROM ubuntu:16.04
 
 ADD crontab /etc/cron.d/hello-cron
  
