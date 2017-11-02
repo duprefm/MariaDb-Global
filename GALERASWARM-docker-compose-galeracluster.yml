@@ -3,14 +3,14 @@ version: "3"
 services:
 
   dbcluster:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
+    image: fabricedupre/mariadb-galeracluster:latest
     hostname: dbcluster 
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - DB_SERVICE_NAME=dbcluster
-      - MYSQL_DATABASE=opteama
-      - MYSQL_PASSWORD=opteamapass
-      - MYSQL_USER=opteama_user
+      - MYSQL_DATABASE=test
+      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=test_user
     networks:
      #- admin-mariadb-network
       - mariadb-network
@@ -19,14 +19,14 @@ services:
     command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci
 
   dbcluster-slave:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera_cluster:latest
+    image: fabricedupre/mariadb-galeracluster:latest
     hostname: dbcluster-slave 
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - DB_SERVICE_NAME=dbcluster
-      - MYSQL_DATABASE=opteama
-      - MYSQL_PASSWORD=opteamapass
-      - MYSQL_USER=opteama_user
+      - MYSQL_DATABASE=test
+      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=test_user
       - MYSQL_ALLOW_EMPTY_PASSWORD=1 
     volumes:
       - VolumeslaveVarLibMysql:/var/lib/mysql
@@ -46,17 +46,9 @@ networks:
 volumes:
   VolumeslaveVarLibMysql:
     driver: netapp
-    driver_opts:
-      size: 100g
   VolumeslaveVarLogMysql:
     driver: netapp
-    driver_opts:
-      size: 10g
   VolumeslaveUsrLibGalera:
     driver: netapp
-    driver_opts:
-      size: 10g
   VolumeslaveSVGMysql:
     driver: netapp
-    driver_opts:
-      size: 100g
