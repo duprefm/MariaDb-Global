@@ -3,7 +3,7 @@ version: "3"
 services:
 
   node1:
-    image: fabricedupre/mariadb-galeracluster:latest 
+    image: fabricedupre/galera:latest 
     hostname: node1 
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -22,7 +22,7 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   node2:
-    image: fabricedupre/mariadb-galeracluster:latest 
+    image: fabricedupre/galera:latest 
     hostname: node2
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -42,7 +42,7 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   node3:
-    image: fabricedupre/mariadb-galeracluster:latest 
+    image: fabricedupre/galera:latest 
     hostname: node3
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -79,22 +79,22 @@ networks:
     external: true
 volumes:
   Volumenode1VarLibMysql:
-    driver: global
+    driver: local
   Volumenode1VarLogMysql:
-    driver: global
+    driver: local
   Volumenode1UsrLibGalera:
-    driver: global
+    driver: local
   Volumenode2VarLibMysql:
-    driver: global
+    driver: local
   Volumenode2VarLogMysql:
-    driver: global
+    driver: local
   Volumenode2UsrLibGalera:
-    driver: global
+    driver: local
   Volumenode3VarLibMysql:
-    driver: global
+    driver: local
   Volumenode3VarLogMysql:
-    driver: global
+    driver: local
   Volumenode3UsrLibGalera:
-    driver: global
+    driver: local
   VolumeSVGMysql:
-    driver: global
+    driver: local
