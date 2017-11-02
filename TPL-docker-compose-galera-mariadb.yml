@@ -3,7 +3,7 @@ version: "3"
 services:
 
   node1:
-    image: fabricedupre/galera:latest 
+    image: fabricedupre/mariadb-galera:latest 
     hostname: node1 
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -22,7 +22,7 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   node2:
-    image: fabricedupre/galera:latest 
+    image: fabricedupre/mariadb-galera:latest 
     hostname: node2
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -42,7 +42,7 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   node3:
-    image: fabricedupre/galera:latest 
+    image: fabricedupre/mariadb-galera:latest 
     hostname: node3
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
