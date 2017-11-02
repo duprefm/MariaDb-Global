@@ -1,2 +1,0 @@
-30 20 * * * root /usr/local/bin/dumpSQL.sh root $MYSQL_ROOT_PASSWORD localhost
-
