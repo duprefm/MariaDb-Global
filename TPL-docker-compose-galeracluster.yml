@@ -12,7 +12,6 @@ services:
       - MYSQL_PASSWORD=testpass
       - MYSQL_USER=test_user
     networks:
-     #- admin-mariadb-network
       - mariadb-network
     ports:
       - <PORT_MARIA>:3306
