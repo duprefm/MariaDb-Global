@@ -128,11 +128,11 @@ docker volume create VolumeMysqldump
 
 * Cluster.
 
-docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV AppGalera_node1'
+docker run -d --network=mariadb-network -v GALERACLUSTER_VolumeSVGMysql:/mnt fabricedupre/mariadb-ubuntu /bin/bash /usr/local/bin/dumpSQL.sh root $MYSQL_ROOT_PASSWORD GALERACLUSTER_lb
 
 * Single instance.
 
-docker run -d --network=mariadb-network -v VolumeMysqldump:/mnt fabricedupre/mariadb sh -c 'exec /usr/local/bin/dumpSQL.sh root k3O2Iyd89cnqV0IQx7qV firstDBapp_db'
+docker run -d --network=mariadb-network -v MARIADB_VolumeSVGMysql:/mnt fabricedupre/mariadb-ubuntu /bin/bash /usr/local/bin/dumpSQL.sh root $MYSQL_ROOT_PASSWORD MARIADB_db
 
 * Vérifier le contenu du volume contenant les dumps.
 
