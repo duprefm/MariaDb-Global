@@ -3,7 +3,7 @@ version: "3"
 services:
 
   db:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/mariadb:latest
+    image: fabricedupre/mariadb-ubuntu:latest
     hostname: db
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
@@ -28,14 +28,8 @@ networks:
     external: true
 volumes:
   VolumeDBVarLibmysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: local
   VolumeDBVarLogmysql:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: local
   VolumeSVGMysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: local
