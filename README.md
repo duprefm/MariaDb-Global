@@ -47,20 +47,21 @@ export APP_NAME=GALERACLUSTER
 cat nginx_template.conf | sed 's/template/GALERACLUSTER/g' > nginx_GALERACLUSTER.conf
 
 cat TPL-docker-compose-standalone-mariadb.yml | sed 's/<PORT_MARIA>/33064/g' | sed 's/<APP_NAME>/G
-ALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml.new
+ALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml
 
-docker stack deploy --compose-file docker-compose-galera-mariadb.yml $APP_NAME
+docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME
 
 ## Création d'un Cluster Mariadb Galera.
 ### Lancement de la stack.
 
 export PORT_MARIA=33066
 
-export APP_NAME=GALERACLUSTER
+export APP_NAME=GALERASWARM
 
-docker network create --driver=overlay --attachable $APP_NAME-network
+cat TPL-docker-compose-galeracluster.yml | sed 's/<PORT_MARIA>/33066/g' | sed 's/<APP_NAME>/GALERA
+SWARM/g' > GALERASWARM-docker-compose-galeracluster.yml
 
-docker stack deploy --compose-file docker-compose-galeracluster.yml $APP_NAME
+docker stack deploy --compose-file GALERASWARM-docker-compose-galeracluster.yml $APP_NAME
 
 ### Commandes sql de vérification de l'état du cluster galera.
 
