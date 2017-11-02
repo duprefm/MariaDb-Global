@@ -45,7 +45,7 @@ services:
     image: fabricedupre/mariadb-galera:latest 
     hostname: node3
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpasss
+      - MYSQL_ROOT_PASSWORD=rootpass
       - MYSQL_DATABASE=test
       - MYSQL_USER=test_user
       - MYSQL_PASSWORD=testpass
