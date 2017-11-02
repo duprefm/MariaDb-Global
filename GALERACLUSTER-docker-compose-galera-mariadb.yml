@@ -3,7 +3,7 @@ version: "3"
 services:
 
   node1:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest 
+    image: fabricedupre/mariadb-galeracluster:latest 
     hostname: node1 
     environment:
       - MYSQL_ROOT_PASSWORD=k3O2Iyd89cnqV0IQx7qV
@@ -22,7 +22,7 @@ services:
       test: mysqladmin ping -uroot -pk3O2Iyd89cnqV0IQx7qV
 
   node2:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest 
+    image: fabricedupre/mariadb-galeracluster:latest 
     hostname: node2
     environment:
       - MYSQL_ROOT_PASSWORD=k3O2Iyd89cnqV0IQx7qV
@@ -42,7 +42,7 @@ services:
       test: mysqladmin ping -uroot -pk3O2Iyd89cnqV0IQx7qV
 
   node3:
-    image: dtr-v-rr.docker.opteama.net:443/stelia/galera:latest 
+    image: fabricedupre/mariadb-galeracluster:latest 
     hostname: node3
     environment:
       - MYSQL_ROOT_PASSWORD=k3O2Iyd89cnqV0IQx7qV
@@ -79,42 +79,22 @@ networks:
     external: true
 volumes:
   Volumenode1VarLibMysql:
-    driver: netapp 
-    driver_opts:
-      size: 100g
+    driver: global 
   Volumenode1VarLogMysql:
-    driver: netapp 
-    driver_opts:
-      size: 10g
+    driver: global 
   Volumenode1UsrLibGalera:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   Volumenode2VarLibMysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: global
   Volumenode2VarLogMysql:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   Volumenode2UsrLibGalera:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   Volumenode3VarLibMysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: global
   Volumenode3VarLogMysql:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   Volumenode3UsrLibGalera:
-    driver: netapp
-    driver_opts:
-      size: 10g
+    driver: global
   VolumeSVGMysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: global
