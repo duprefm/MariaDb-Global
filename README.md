@@ -7,23 +7,31 @@ docker network create --driver=overlay --attachable admin-mariadb-network
 
 ## Récupération des sources.
 
-git clone https://github.com/duprefm/MariaDb.git
+git clone https://github.com/duprefm/MariaDb-Global.git
 
 ## Construction de l'image mariadb.
 
-cp Dockerfile-mariadb Dockerfile
+cd mariadb-ubuntu
 
-docker build -t fabricedupre/mariadb:latest .
+docker build -t fabricedupre/mariadb-ubuntu:latest .
 
-docker push fabricedupre/mariadb:latest
+docker push fabricedupre/mariadb-ubuntu:latest
 
 ## Construction de l'image mariadb-galera.
 
-cp Dockerfile-galera Dockerfile
+cd galera
 
-docker build -t fabricedupre/galera:latest .
+docker build -t fabricedupre/mariadb-galera:latest .
 
-docker push fabricedupre/galera:latest
+docker push fabricedupre/mariadb-galera:latest
+
+## Construction de l'image mariadb-galeracluster.
+
+cd galera
+
+docker build -t fabricedupre/mariadb-galeracluster:latest .
+
+docker push fabricedupre/mariadb-galeracluster:latest
 
 ## Création d'un Cluster Mariadb Galera (Nginx).
 ### Lancement de la stack.
