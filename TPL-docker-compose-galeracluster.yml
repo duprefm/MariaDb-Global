@@ -8,9 +8,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - DB_SERVICE_NAME=dbcluster
-      - MYSQL_DATABASE=opteama
-      - MYSQL_PASSWORD=opteamapass
-      - MYSQL_USER=opteama_user
+      - MYSQL_DATABASE=test
+      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=test_user
     networks:
      #- admin-mariadb-network
       - mariadb-network
@@ -24,9 +24,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - DB_SERVICE_NAME=dbcluster
-      - MYSQL_DATABASE=opteama
-      - MYSQL_PASSWORD=opteamapass
-      - MYSQL_USER=opteama_user
+      - MYSQL_DATABASE=test
+      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=test_user
       - MYSQL_ALLOW_EMPTY_PASSWORD=1 
     volumes:
       - VolumeslaveVarLibMysql:/var/lib/mysql
