@@ -79,24 +79,22 @@ networks:
     external: true
 volumes:
   Volumenode1VarLibMysql:
-    driver: netapp
+    driver: global
   Volumenode1VarLogMysql:
-    driver: netapp
+    driver: global
   Volumenode1UsrLibGalera:
-    driver: netapp
+    driver: global
   Volumenode2VarLibMysql:
-    driver: netapp
+    driver: global
   Volumenode2VarLogMysql:
-    driver: netapp
+    driver: global
   Volumenode2UsrLibGalera:
-    driver: netapp
+    driver: global
   Volumenode3VarLibMysql:
-    driver: netapp
+    driver: global
   Volumenode3VarLogMysql:
-    driver: netapp
+    driver: global
   Volumenode3UsrLibGalera:
-    driver: netapp
+    driver: global
   VolumeSVGMysql:
-    driver: netapp
-    driver_opts:
-      size: 100g
+    driver: global
