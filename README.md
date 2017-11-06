@@ -46,8 +46,7 @@ export APP_NAME=GALERACLUSTER
 
 cat nginx_template.conf | sed 's/template/GALERACLUSTER/g' > nginx_GALERACLUSTER.conf
 
-cat TPL-docker-compose-standalone-mariadb.yml | sed 's/<PORT_MARIA>/33064/g' | sed 's/<APP_NAME>/G
-ALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml
+cat TPL-docker-compose-galera-mariadb.yml | sed 's/<PORT_MARIA>/33064/g' | sed 's/<APP_NAME>/GALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml
 
 docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME
 
