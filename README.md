@@ -61,11 +61,11 @@ Docker Mariadb et Galera cluster
 
 `docker stack deploy --compose-file GALERASWARM-docker-compose-galeracluster.yml $APP_NAME`
 
-#### Swarm Visualizer.
+## Swarm Visualizer.
 
 `docker service create --name=viz --publish=8080:8080/tcp --constraint=node.role==manager --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock dockersamples/visualizer`
 
-### Commandes sql de vérification de l'état du cluster galera.
+## Commandes sql de vérification de l'état du cluster galera.
 
 `SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size'`
 
