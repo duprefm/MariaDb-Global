@@ -7,59 +7,59 @@ Docker Mariadb et Galera cluster
 
 ## Récupération des sources.
 
-```git clone https://github.com/duprefm/MariaDb-Global.git
+`git clone https://github.com/duprefm/MariaDb-Global.git`
 
-cd MariaDb-Global```
+`cd MariaDb-Global`
 
 ## Construction de l'image mariadb.
 
-```cd mariadb-ubuntu
+`cd mariadb-ubuntu`
 
-docker build -t fabricedupre/mariadb-ubuntu:latest .
+`docker build -t fabricedupre/mariadb-ubuntu:latest .`
 
-docker push fabricedupre/mariadb-ubuntu:latest```
+`docker push fabricedupre/mariadb-ubuntu:latest`
 
 ## Construction de l'image mariadb-galera.
 
-```cd galera
+`cd galera`
 
-docker build -t fabricedupre/mariadb-galera:latest .
+`docker build -t fabricedupre/mariadb-galera:latest .`
 
-docker push fabricedupre/mariadb-galera:latest```
+`docker push fabricedupre/mariadb-galera:latest`
 
 ## Construction de l'image mariadb-galeracluster.
 
-```cd mariadb-galeracluster
+`cd mariadb-galeracluster`
 
-docker build -t fabricedupre/mariadb-galeracluster:latest .
+`docker build -t fabricedupre/mariadb-galeracluster:latest .`
 
-docker push fabricedupre/mariadb-galeracluster:latest```
+`docker push fabricedupre/mariadb-galeracluster:latest`
 
 ## Création d'un Cluster Mariadb Galera (Nginx).
 ### Lancement de la stack.
 
-``````cd ../MariaDb
+`cd ../MariaDb`
 
-export PORT_MARIA=33064
+`export PORT_MARIA=33064`
 
-export APP_NAME=GALERACLUSTER
+`export APP_NAME=GALERACLUSTER`
 
-cat nginx_template.conf | sed 's/template/GALERACLUSTER/g' > nginx_GALERACLUSTER.conf
+`cat nginx_template.conf | sed 's/template/GALERACLUSTER/g' > nginx_GALERACLUSTER.conf`
 
-cat TPL-docker-compose-galera-mariadb.yml | sed 's/<PORT_MARIA>/33064/g' | sed 's/<APP_NAME>/GALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml
+`cat TPL-docker-compose-galera-mariadb.yml | sed 's/<PORT_MARIA>/33064/g' | sed 's/<APP_NAME>/GALERACLUSTER/g' > GALERACLUSTER-docker-compose-galera-mariadb.yml`
 
-docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME``````
+`docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME`
 
 ## Création d'un Cluster Mariadb Galera.
 ### Lancement de la stack.
 
-````export PORT_MARIA=33066
+`export PORT_MARIA=33066`
 
-export APP_NAME=GALERASWARM
+`export APP_NAME=GALERASWARM`
 
-cat TPL-docker-compose-galeracluster.yml | sed 's/<PORT_MARIA>/33066/g' | sed 's/<APP_NAME>/GALERASWARM/g' > GALERASWARM-docker-compose-galeracluster.yml
+`cat TPL-docker-compose-galeracluster.yml | sed 's/<PORT_MARIA>/33066/g' | sed 's/<APP_NAME>/GALERASWARM/g' > GALERASWARM-docker-compose-galeracluster.yml`
 
-docker stack deploy --compose-file GALERASWARM-docker-compose-galeracluster.yml $APP_NAME````
+`docker stack deploy --compose-file GALERASWARM-docker-compose-galeracluster.yml $APP_NAME`
 
 #### Swarm Visualizer.
 
@@ -67,28 +67,28 @@ docker stack deploy --compose-file GALERASWARM-docker-compose-galeracluster.yml 
 
 ### Commandes sql de vérification de l'état du cluster galera.
 
-``````SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size'
+`SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size'`
 
-SHOW GLOBAL STATUS LIKE 'wsrep_local_state_comment'
+`SHOW GLOBAL STATUS LIKE 'wsrep_local_state_comment'`
 
-SHOW GLOBAL STATUS LIKE 'wsrep_cluster_status'
+`SHOW GLOBAL STATUS LIKE 'wsrep_cluster_status'`
 
-SHOW GLOBAL STATUS LIKE 'wsrep_local_state_comment'
+`SHOW GLOBAL STATUS LIKE 'wsrep_local_state_comment'`
 
-SHOW STATUS LIKE 'wsrep_last_committed';
+`SHOW STATUS LIKE 'wsrep_last_committed';`
 
-SHOW GLOBAL STATUS LIKE 'wsrep_%';``````
+`SHOW GLOBAL STATUS LIKE 'wsrep_%';`
 
 ## Lancement d'une base Mariadb Sandalone.
 ### Lancement de la stack.
 
-````export PORT_MARIA=33062
+`export PORT_MARIA=33062`
 
-export APP_NAME=MARIADB
+`export APP_NAME=MARIADB`
 
-cat TPL-docker-compose-standalone-mariadb.yml | sed 's/<PORT_MARIA>/33062/g' | sed 's/<APP_NAME>/MARIADB/g' > MARIADB-docker-compose-standalone-mariadb.yml
+`cat TPL-docker-compose-standalone-mariadb.yml | sed 's/<PORT_MARIA>/33062/g' | sed 's/<APP_NAME>/MARIADB/g' > MARIADB-docker-compose-standalone-mariadb.yml`
 
-docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml $APP_NAME````
+`docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml $APP_NAME`
 
 ## Console admin
 
@@ -98,15 +98,15 @@ docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml
 
 ### Commande de création de la table reçevant les données.
 
-```CREATE database test;
+`CREATE database test;`
 
-USE test;
+`USE test;`
 
-CREATE TABLE data ( id INTEGER NOT NULL AUTO_INCREMENT, value CHAR(30), count INTEGER, PRIMARY KEY (value), KEY (id) );```
+`CREATE TABLE data ( id INTEGER NOT NULL AUTO_INCREMENT, value CHAR(30), count INTEGER, PRIMARY KEY (value), KEY (id) );`
 
 ### Chargemenr des donées.
 
-cd ..
+`cd ..`
 
 * Cluster.
 
@@ -122,9 +122,9 @@ cd ..
 
 * Arrêt de la stack.
 
-``export APP_NAME=GALERACLUSTER
+`export APP_NAME=GALERACLUSTER`
 
-docker stack rm $APP_NAME``
+`docker stack rm $APP_NAME`
 
 * Modification du fichier grastate.dat
 
@@ -139,11 +139,11 @@ Le fait de passer de 0 a 1 la variable **safe_to_bootstrap**, permet au cluster 
 
 * Redémarrage de la pile.
 
-```export PORT_MARIA=33064
+`export PORT_MARIA=33064`
 
-export APP_NAME=GALERACLUSTER
+`export APP_NAME=GALERACLUSTER`
 
-docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME```
+`docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.yml $APP_NAME`
 
 ### Sandalone
 
@@ -153,9 +153,9 @@ docker stack deploy --compose-file GALERACLUSTER-docker-compose-galera-mariadb.y
 
 * Redémarrage de la pile.
 
-``export PORT_MARIA=33062
+`export PORT_MARIA=33062`
 
-docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml MARIADB``
+`docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml MARIADB`
 
 # Sauvegardes
 
@@ -169,15 +169,15 @@ docker stack deploy --compose-file MARIADB-docker-compose-standalone-mariadb.yml
 
 ## Lancement Sauvegardes Standalone
 
-``docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MARIADB_db
+`docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass MARIADB_db`
 
-docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MARIADB_db``
+`docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass MARIADB_db`
 
 ## Lancement Sauvegardes Cluster
 
-``docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass GALERACLUSTER_lb
+`docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/svgxtrabackup.sh root rootpass GALERACLUSTER_lb
 
-docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass GALERACLUSTER_lb``
+docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpass GALERACLUSTER_lb`
 
 ## Vérification Sauvegardes Standalone
 
