@@ -8,7 +8,6 @@ Docker Mariadb et Galera cluster
 ## Récupération des sources.
 
 ``git clone https://github.com/duprefm/MariaDb-Global.git
-
 cd MariaDb-Global``
 
 ## Construction de l'image mariadb.
