@@ -185,3 +185,178 @@ docker exec -it MariaDb_Backups ls -rtl /mnt/MARIADB_db/mysqldump
 ## Vérification Sauvegardes Cluster
 
 docker exec -it MariaDb_Backups ls -rtl /mnt/GALERACLUSTER_lb/mysqldump
+
+## Tunning.
+
+### Application JLTMariaDB.
+
+`docker run -i -t --network mariadb-network --rm hauptmedia/mysqltuner mysqltuner --host JLTMariaDB_db --user root --pass k3O2Iyd89cnqV0IQx7qV --forcemem 32000 --verbose --buffers --dbstat --idxstat --sysstat --pfstat`
+
+### Application MARIADB.
+
+`docker run -i -t --network mariadb-network --rm hauptmedia/mysqltuner mysqltuner --host MARIADB_db --user root --pass rootpass --forcemem 32000 --verbose --buffers --dbstat --idxstat --sysstat --pfstat`
+
+### Application GALERACLUSTER.
+
+`docker run -i -t --network mariadb-network --rm hauptmedia/mysqltuner mysqltuner --host GALERACLUSTER_lb --user root --pass k3O2Iyd89cnqV0IQx7qV --forcemem 32000 --verbose --buffers --dbstat --idxstat --sysstat --pfstat`
+
+### Tunning specifique mis en place pour la base ekm de la stack JLTMariaDB.
+
+A l'aide de mysqltune, et de cette doc https://www.tecmint.com/mysql-mariadb-performance-tuning-and-optimization/3/ j'ai positionné les paramètres suivants sur la base ekm.
+
+* InnoDB file-per-table.
+
+```
+MariaDB [(none)]> select @@innodb_file_per_table;
++-------------------------+
+| @@innodb_file_per_table |
++-------------------------+
+|                       1 |
++-------------------------+
+1 row in set (0.00 sec)
+```
+
+* InnoDB buffer pool Usage.
+
+```
+MariaDB [(none)]> SET GLOBAL innodb_buffer_pool_size=1288490188;
+
+MariaDB [(none)]> select @@innodb_buffer_pool_size;
++---------------------------+
+| @@innodb_buffer_pool_size |
++---------------------------+
+|                1342177280 |
++---------------------------+
+1 row in set (0.00 sec)
+```
+
+* MySQL thread_cache_size.
+
+```
+MariaDB [(none)]> show status like 'Threads_created';
++-----------------+-------+
+| Variable_name   | Value |
++-----------------+-------+
+| Threads_created | 649   |
++-----------------+-------+
+1 row in set (0.00 sec)
+
+MariaDB [(none)]> show status like 'Connections';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| Connections   | 4564  |
++---------------+-------+
+1 row in set (0.00 sec)
+```
+
+La formule a appliquer pour positionner le paramètre thread_cache_size est la suivante :
+
+thread_cache_size = 100 - ((Threads_created / Connections) * 100)
+
+```
+MariaDB [(none)]> set global thread_cache_size = 86;
+Query OK, 0 rows affected (0.00 sec)
+```
+
+*  MySQL query_cache_size.
+
+Si vous avez de nombreuses requêtes répétitives et que vos données ne changent pas souvent, utilisez le cache de requêtes. Si le query_cache_size est trop gros, cela peut entraîner une dégradation des performances.
+La raison derrière cela est le fait que les threads doivent verrouiller le cache pendant les mises à jour. 
+En règle la valeur de 200 à 300 Mo doit être plus que suffisante.
+Par défaut sa valeur est de 64M, je la positionne a 80M.
+
+```
+MariaDB [(none)]> select @@query_cache_type;
++--------------------+
+| @@query_cache_type |
++--------------------+
+| ON                 |
++--------------------+
+1 row in set (0.00 sec)
+
+MariaDB [(none)]> set global query_cache_limit=256*1024;
+
+MariaDB [(none)]> select @@query_cache_limit;
++---------------------+
+| @@query_cache_limit |
++---------------------+
+|              262144 |
++---------------------+
+1 row in set (0.00 sec)
+
+MariaDB [(none)]> set global query_cache_min_res_unit=2*1024;
+
+MariaDB [(none)]> select @@query_cache_min_res_unit;
++----------------------------+
+| @@query_cache_min_res_unit |
++----------------------------+
+|                       2048 |
++----------------------------+
+1 row in set (0.00 sec)
+
+MariaDB [(none)]> set global query_cache_size=80*1024*1024;
+
+MariaDB [(none)]> select @@query_cache_size;
++--------------------+
+| @@query_cache_size |
++--------------------+
+|           83886080 |
++--------------------+
+1 row in set (0.00 sec)
+```
+
+* tmp_table_size et max_heap_table_size.
+
+Les deux directives doivent avoir la même taille pour éviter les écritures de disque. 
+Tmp_table_size est la taille maximale des tables internes en mémoire. 
+En cas de dépassement de la limite en question, la table sera convertie en table MyISAM sur disque.
+
+Cela affectera les performances de la base de données. 
+Les administrateurs recommandent généralement de donner 64 Mo pour les deux valeurs pour chaque Go de RAM sur le serveur.
+
+```
+MariaDB [(none)]> set global tmp_table_size=128*1024*1024;
+
+MariaDB [(none)]> show global variables like 'max_heap_table_size%';
++---------------------+----------+
+| Variable_name       | Value    |
++---------------------+----------+
+| max_heap_table_size | 67108864 |
++---------------------+----------+
+1 row in set (0.00 sec)
+
+MariaDB [(none)]> set global max_heap_table_size=128*1024*1024;
+
+MariaDB [(none)]> show global variables like 'innodb_buffer_pool_size%';
++-------------------------+------------+
+| Variable_name           | Value      |
++-------------------------+------------+
+| innodb_buffer_pool_size | 1342177280 |
++-------------------------+------------+
+1 row in set (0.00 sec)
+```
+
+* innodb_buffer_pool_size.
+
+Cette valeur doit être comprise entre 60% et 70% de la taille de la memoire du serveur hebergeant la base de données.
+Comme le container utilise 2Go, je positionne comme suit la valeur:
+
+`MariaDB [(none)]> SET GLOBAL innodb_buffer_pool_size=1288490188;`
+
+* MySQL idle Connections.
+
+Il est recommandé, dans la majorité des cas de positionner ce paramètre a 60.
+
+```
+MariaDB [(none)]> set wait_timeout=60;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]> select @@wait_timeout;
++----------------+
+| @@wait_timeout |
++----------------+
+|             60 |
++----------------+
+1 row in set (0.00 sec)
+```
