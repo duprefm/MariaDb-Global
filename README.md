@@ -195,7 +195,7 @@ docker exec -it MariaDb_Backups /bin/bash /usr/local/bin/dumpSQL.sh root rootpas
 
 ### Application GALERACLUSTER.
 
-`docker run -i -t --network mariadb-network --rm hauptmedia/mysqltuner mysqltuner --host GALERACLUSTER_lb --user root --pass k3O2Iyd89cnqV0IQx7qV --forcemem 32000 --verbose --buffers --dbstat --idxstat --sysstat --pfstat`
+`docker run -i -t --network mariadb-network --rm hauptmedia/mysqltuner mysqltuner --host GALERACLUSTER_lb --user root --pass rootpass --forcemem 32000 --verbose --buffers --dbstat --idxstat --sysstat --pfstat`
 
 ### Tunning specifique mis en place pour la base ekm de la stack JLTMariaDB.
 
