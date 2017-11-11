@@ -62,7 +62,8 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   lb:
-    image: georce/maxscale 
+#    image: georce/maxscale
+    image: fabricedupre/maxscale-ubuntu:latest
     hostname: lb
     environment:
       - address1=GALERACLUSTER_node1
