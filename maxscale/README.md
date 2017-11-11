@@ -12,14 +12,13 @@ docker run -itd --name=maxscale -p 3306:3306 \
 georce/maxscale
 ```
 
-#Configuration
+# Configuration
 ```bash
 /usr/local/skysql/maxscale/etc/MaxScale.cnf
 ```
 
 # Build
 ```docker build -t fabricedupre/maxscale-ubuntu:latest .
-
 docker push fabricedupre/maxscale-ubuntu:latest
 ```
 
