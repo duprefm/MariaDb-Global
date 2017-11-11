@@ -80,7 +80,7 @@ services:
 networks:
   mariadb-network:
     driver: overlay
-    external: true
+    #external: true
 volumes:
   Volumenode1VarLibMysql:
     driver: local 
