@@ -9,7 +9,7 @@ You can launch the image using the docker command line,
 docker run -itd --name=maxscale -p 3306:3306 \
 -e 'address1=192.168.1.1' -e 'address2=192.168.1.2' -e 'address3=192.168.1.3' \
 -e 'user=cluster' -e 'passwd=123456' \
-georce/maxscale
+fabricedupre/maxscale-ubuntu:latest
 ```
 
 # Configuration
