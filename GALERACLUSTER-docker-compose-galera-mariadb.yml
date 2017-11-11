@@ -62,10 +62,14 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   lb:
-    image: nginx
+    image: georce/maxscale 
     hostname: lb
-    volumes:
-      - $PWD/nginx_GALERACLUSTER.conf:/etc/nginx/nginx.conf
+    environment:
+      - address1=GALERACLUSTER_node1
+      - address2=GALERACLUSTER_node2
+      - address3=GALERACLUSTER_node3
+      - user=cluster
+      - passwd=clusterpass
     networks:
       - mariadb-network
     depends_on:
