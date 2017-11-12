@@ -8,13 +8,6 @@ servers=dbserv1,dbserv2,dbserv3
 [maxscale]
 threads=4
 
-[Splitter Service]
-type=service
-router=readwritesplit
-servers=dbserv1,dbserv2,dbserv3
-user=$user
-passwd=$passwd
-
 [Splitter Listener]
 type=listener
 service=Splitter Service

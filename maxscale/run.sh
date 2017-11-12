@@ -7,4 +7,4 @@ echo $address3  address3 >> /etc/hosts
 sed -i 's/user=$user/user='"$user"'/g' /usr/local/skysql/maxscale/etc/MaxScale.cnf
 sed -i 's/passwd=$passwd/passwd='"$passwd"'/g' /usr/local/skysql/maxscale/etc/MaxScale.cnf
 
-systemctl start maxscale.service
+/usr/bin/maxscale -f /usr/local/skysql/maxscale/etc/MaxScale.cnf
