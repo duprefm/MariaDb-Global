@@ -73,7 +73,7 @@ services:
       - mariadb-network
     depends_on:
       - node3
-    command: run.sh
+    command: /run.sh
     ports:
       - 33064:3306
 
