@@ -25,6 +25,7 @@ fi
 
 cat /etc/nginx/nginx.conf | sed -e "s/node1/"${node1}"/g" -e "s/node2/"${node2}"/g" -e "s/node3/"${node3}"/g" > /etc/nginx/nginx.conf.new
 mv /etc/nginx/nginx.conf.new /etc/nginx/nginx.conf
+systemctl start nginx
 #sed -i 's/node1/'"$node1"'/g' /etc/nginx/nginx.conf 
 #sed -i 's/node2/'"$node2"'/g' /etc/nginx/nginx.conf 
 #sed -i 's/node3/'"$node3"'/g' /etc/nginx/nginx.conf 
