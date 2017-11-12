@@ -5,6 +5,8 @@ threads=4
 type=service
 router=readwritesplit
 servers=dbserv1,dbserv2,dbserv3
+user=maxscale
+passwd=maxscaleuser
 
 [Splitter Listener]
 type=listener
