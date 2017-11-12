@@ -12,3 +12,4 @@ ENV node2=node2
 ENV node3=node3
 
 ENTRYPOINT ["/run.sh"]
+CMD ["nginx", "-g", "daemon off;"]
