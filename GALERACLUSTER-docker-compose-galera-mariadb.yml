@@ -63,12 +63,14 @@ services:
 
   lb:
 #    image: georce/maxscale
-    image: fabricedupre/nginx-galera:latest
+    image: fabricedupre/maxscale-ubuntu:latest 
     hostname: lb
     environment:
-      - node1=GALERACLUSTER_node1
-      - node2=GALERACLUSTER_node2
-      - node3=GALERACLUSTER_node3
+      - address1=GALERACLUSTER_node1
+      - address2=GALERACLUSTER_node2
+      - address3=GALERACLUSTER_node3
+      - user=cluster
+      - passwd=clusterpass
     networks:
       - mariadb-network
     depends_on:
