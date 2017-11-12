@@ -8,4 +8,3 @@ sed -i 's/user=$user/user='"$user"'/g' /usr/local/skysql/maxscale/etc/MaxScale.c
 sed -i 's/passwd=$passwd/passwd='"$passwd"'/g' /usr/local/skysql/maxscale/etc/MaxScale.cnf
 
 service maxscale start
-update-rc.d maxscale defaults
