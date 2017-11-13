@@ -5,8 +5,8 @@ threads=4
 type=service
 router=readwritesplit
 servers=dbserv1,dbserv2,dbserv3
-user=maxscale
-passwd=maxscaleuser
+user=user
+passwd=passwd
 
 [Splitter Listener]
 type=listener
@@ -37,8 +37,8 @@ protocol=MySQLBackend
 type=monitor
 module=galeramon
 servers=dbserv1,dbserv2,dbserv3
-user=$user
-passwd=$passwd
+user=user
+passwd=passwd
 
 [CLI]
 type=service
