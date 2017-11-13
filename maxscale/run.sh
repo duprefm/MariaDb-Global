@@ -11,4 +11,4 @@ sed -i 's/address=address2/address='"$address2"'/g' /usr/local/skysql/maxscale/e
 sed -i 's/address=address3/address='"$address3"'/g' /usr/local/skysql/maxscale/etc/MaxScale.cnf
 
 #sleep 300
-/usr/bin/maxscale -f /usr/local/skysql/maxscale/etc/MaxScale.cnf
+#/usr/bin/maxscale -f /usr/local/skysql/maxscale/etc/MaxScale.cnf

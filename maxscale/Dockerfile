@@ -23,6 +23,8 @@ RUN chmod 755 /run.sh
 
 RUN rm -f /maxscale-2.0.6-1.ubuntu.xenial.x86_64.deb
 
+ENTRYPOINT ["/run.sh"]
+
 EXPOSE 3306
 
-CMD ["/run.sh"]
+CMD ["/usr/bin/maxscale -f /usr/local/skysql/maxscale/etc/MaxScale.cnf"]
