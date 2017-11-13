@@ -8,8 +8,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - MYSQL_DATABASE=test
-      - MYSQL_USER=test_user
-      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=cluster
+      - MYSQL_PASSWORD=clusterpas
 #    volumes:
 #      - Volumenode1VarLibMysql:/var/lib/mysql
 #      - Volumenode1VarLogMysql:/var/log/mysql
@@ -17,7 +17,7 @@ services:
 #      - VolumeSVGMysql:/mnt
     networks:
       - mariadb-network
-    command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm:// --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm:// --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
     healthcheck:
       test: mysqladmin ping -uroot -prootpass
 
@@ -27,8 +27,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - MYSQL_DATABASE=test
-      - MYSQL_USER=test_user
-      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=cluster
+      - MYSQL_PASSWORD=clusterpas
 #    volumes:
 #      - Volumenode2VarLibMysql:/var/lib/mysql
 #      - Volumenode2VarLogMysql:/var/log/mysql
@@ -37,7 +37,7 @@ services:
       - node1 
     networks:
       - mariadb-network
-    command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://GALERACLUSTER_node1,GALERACLUSTER_node2 --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://GALERACLUSTER_node1,GALERACLUSTER_node2 --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
     healthcheck:
       test: mysqladmin ping -uroot -prootpass
 
@@ -47,8 +47,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=rootpass
       - MYSQL_DATABASE=test
-      - MYSQL_USER=test_user
-      - MYSQL_PASSWORD=testpass
+      - MYSQL_USER=cluster
+      - MYSQL_PASSWORD=clusterpas
 #    volumes:
 #      - Volumenode3VarLibMysql:/var/lib/mysql
 #      - Volumenode3VarLogMysql:/var/log/mysql
@@ -57,7 +57,7 @@ services:
       - mariadb-network
     depends_on:
       - node2 
-    command: --max_allowed_packet=536870912 --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://GALERACLUSTER_node1,GALERACLUSTER_node2,GALERACLUSTER_node3 --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci --query_cache_size=0 --query_cache_type=OFF --log_bin=/var/log/mysql/mariadb-bin --wsrep_on=ON --wsrep_provider=/usr/lib/galera/libgalera_smm.so --wsrep_cluster_address=gcomm://GALERACLUSTER_node1,GALERACLUSTER_node2,GALERACLUSTER_node3 --binlog_format=row --default_storage_engine=InnoDB --innodb_autoinc_lock_mode=2 --bind-address=0.0.0.0 --wsrep_slave_threads=1 --innodb_flush_log_at_trx_commit=2
     healthcheck:
       test: mysqladmin ping -uroot -prootpass
 
