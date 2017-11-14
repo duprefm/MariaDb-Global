@@ -63,7 +63,8 @@ services:
 
   lb:
 #    image: georce/maxscale
-    image: fabricedupre/maxscale-ubuntu:latest 
+#    image: fabricedupre/maxscale-ubuntu:latest
+    image: fabricedupre/maxscale-centos:latest 
     hostname: lb
     environment:
       - address1=GALERACLUSTER_node1
