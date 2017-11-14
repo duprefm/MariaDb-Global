@@ -10,5 +10,6 @@ sed -i 's/address=address1/address='"$address1"'/g' /etc/maxscale.cnf
 sed -i 's/address=address2/address='"$address2"'/g' /maxscale.cnf
 sed -i 's/address=address3/address='"$address3"'/g' /etc/maxscale.cnf
 
-sleep 300
-#maxscale
+sleep 30
+
+maxscale
