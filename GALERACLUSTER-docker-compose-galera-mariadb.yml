@@ -83,7 +83,7 @@ services:
     image: adminer
     hostname: admin
     networks:
-      - mariadb-networks
+      - mariadb-network
     depends_on:
       - lb
     ports:
