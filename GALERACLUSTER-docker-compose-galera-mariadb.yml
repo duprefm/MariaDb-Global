@@ -62,22 +62,33 @@ services:
       test: mysqladmin ping -uroot -prootpass
 
   lb:
+    image: fabricedupre/nginx:latest
 #    image: georce/maxscale
 #    image: fabricedupre/maxscale-ubuntu:latest
-    image: fabricedupre/maxscale-centos:latest 
+#    image: fabricedupre/maxscale-centos:latest 
     hostname: lb
-    environment:
-      - address1=GALERACLUSTER_node1
-      - address2=GALERACLUSTER_node2
-      - address3=GALERACLUSTER_node3
-      - user=cluster
-      - passwd=clusterpass
+#    environment:
+#      - address1=GALERACLUSTER_node1
+#      - address2=GALERACLUSTER_node2
+#      - address3=GALERACLUSTER_node3
+#      - user=cluster
+#      - passwd=clusterpass
     networks:
       - mariadb-network
     depends_on:
       - node3
     ports:
       - 33064:3306
+  
+  admin:
+    image: adminer
+    hostname: admin
+    networks:
+      - mariadb-network
+    depends_on:
+      - lb
+    ports:
+      - 8888:8080
 
 networks:
   mariadb-network:
