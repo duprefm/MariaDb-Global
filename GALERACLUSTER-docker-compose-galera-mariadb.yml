@@ -78,6 +78,16 @@ services:
       - node3
     ports:
       - 33064:3306
+  
+  admin:
+    image: adminer
+    hostname: admin
+    networks:
+      - mariadb-networks
+    depends_on:
+      - lb
+    ports:
+      8888:8080
 
 networks:
   mariadb-network:
