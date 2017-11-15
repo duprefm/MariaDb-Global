@@ -87,7 +87,7 @@ services:
     depends_on:
       - lb
     ports:
-      8888:8080
+      - 8888:8080
 
 networks:
   mariadb-network:
