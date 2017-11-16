@@ -1,3 +1,9 @@
 FROM nginx
 
-COPY nginx_GALERACLUSTER.conf /etc/nginx/nginx.conf
+COPY nginx_template.conf /etc/nginx/nginx.conf
+
+COPY run.sh /run.sh
+
+RUN chmod +x /run.sh
+
+RUN /run.sh 
