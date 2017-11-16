@@ -4,4 +4,4 @@ echo $app_name
 
 sed -i 's/template/'"$app_name"'/g' /etc/nginx/nginx.conf
 
-sleep 300
+#sleep 300
