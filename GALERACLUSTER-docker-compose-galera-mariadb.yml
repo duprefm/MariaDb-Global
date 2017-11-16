@@ -87,7 +87,7 @@ services:
       - PMA_HOSTS=GALERACLUSTER_lb,GALERACLUSTER_node1,GALERACLUSTER_node2,GALERACLUSTER_node3
     networks:
       - mariadb-network
-    depend_on:
+    depends_on:
       - lb
     ports:
       - 8004:80
