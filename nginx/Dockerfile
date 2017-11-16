@@ -6,4 +6,10 @@ COPY run.sh /run.sh
 
 RUN chmod +x /run.sh
 
-ENTRYPOINT /run.sh 
+ENTRYPOINT /run.sh
+
+EXPOSE 80
+
+STOPSIGNAL SIGTERM
+
+CMD ["nginx", "-g", "daemon off;"]
