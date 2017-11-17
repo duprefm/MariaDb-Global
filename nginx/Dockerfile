@@ -12,4 +12,6 @@ EXPOSE 80
 
 STOPSIGNAL SIGTERM
 
-CMD ["nginx", "-s", "reload", "-c", "/etc/nginx/nginx.conf"]
+CMD ["nginx", "-g", "daemon off;"]
+
+RUN sleep 30
