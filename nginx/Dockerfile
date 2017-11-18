@@ -10,8 +10,8 @@ ENTRYPOINT /run.sh
 
 EXPOSE 80
 
-STOPSIGNAL SIGTERM
+#STOPSIGNAL SIGTERM
 
-CMD ["nginx", "-g", "daemon off;"]
+#CMD ["nginx", "-g", "daemon off;"]
 
-RUN sleep 30
+#RUN sleep 30
